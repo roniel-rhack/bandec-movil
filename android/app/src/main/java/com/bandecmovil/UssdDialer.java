@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.romellfudi.ussdlibrary.USSDApi;
 import com.romellfudi.ussdlibrary.USSDController;
+import com.facebook.react.bridge.Promise;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,26 +39,31 @@ public class UssdDialer extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void autenticateUSSDCode(String code){
-        ussdApi.callUSSDInvoke("*444*40*02#", this.map, new USSDController.CallbackInvoke() {
-            @Override
-            public void responseInvoke(String message) {
-                // first option list - select option 1
-                ussdApi.send(code,new USSDController.CallbackMessage(){
-                    @Override
-                    public void responseMessage(String message) {
-                        // second option list - select option 1
-                        System.out.println(message);
-                    }
-                });
-            }
+    public void autenticateUSSDCode(String code, Promise promise){
+        try {
+            ussdApi.callUSSDInvoke("*444*40*02#", this.map, new USSDController.CallbackInvoke() {
+                @Override
+                public void responseInvoke(String message) {
+                    // first option list - select option 1
+                    ussdApi.send(code, new USSDController.CallbackMessage() {
+                        @Override
+                        public void responseMessage(String message) {
+                            // second option list - select option 1
+                            promise.resolve(message);
+                        }
+                    });
+                }
 
-            @Override
-            public void over(String message) {
-                // message has the response string data from USSD
-                // response no have input text, NOT SEND ANY DATA
-            }
+                @Override
+                public void over(String message) {
+                    // message has the response string data from USSD
+                    // response no have input text, NOT SEND ANY DATA
+                    promise.resolve(message);
+                }
 
-        });
+            });
+        }catch (Exception e){
+            promise.reject("Error", e.getMessage());
+        }
     }
 }
