@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Image, PermissionsAndroid} from 'react-native';
+import AppContent from './src/App'
 import {
     Body,
     Button,
@@ -20,7 +21,7 @@ import {
 
 import UssdDialer from './src/native/UssdDialer';
 
-export default class App extends Component {
+class App extends Component {
     componentDidMount(): void {
 
     }
@@ -88,3 +89,11 @@ export default class App extends Component {
         );
     }
 }
+
+const AppReal: React.FC<{}> = (props:{})=>{
+    return (
+      <AppContent/>
+    );
+}
+
+export default AppReal;
