@@ -24,7 +24,9 @@ const AppNavigator: React.FC<{}> = (props: {}) => {
             <SafeAreaProvider>
                 <NavigationContainer theme={DefaultTheme}>
                     <Tab.Navigator initialRouteName="Auth">
-                        <Tab.Screen name="Auth" component={AuthScreen}
+                        <Tab.Screen name="Autenticarse" component={AuthScreen}
+                                    options={{tabBarIcon: props1 => iconTab(props1, "person")}}/>
+                        <Tab.Screen name="Registrarse" component={AuthScreen}
                                     options={{tabBarIcon: props1 => iconTab(props1, "person-add")}}/>
                         <Tab.Screen name="Inicio" component={HomeScreen}
                                     options={{tabBarIcon: props1 => iconTab(props1, "home")}}/>

@@ -1,11 +1,12 @@
-import React, {Fragment} from "react";
+import React from "react";
 import AppNavigator from "./AppNavigator";
+import {Root} from "native-base";
 
 const AppInitializer: React.FC<{}> = (props: {}) => {
     return (
-        <Fragment>
+        <Root>
             <AppNavigator/>
-        </Fragment>
+        </Root>
     )
 }
 export default AppInitializer;
