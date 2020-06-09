@@ -19,6 +19,8 @@ import {
 } from 'native-base';
 
 import UssdDialer from './src/native/UssdDialer';
+import AppInitializer from "./src/AppInitializer";
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const App = () => {
     const [javaMessage, setJavaMEssage] = useState('');
@@ -88,5 +90,13 @@ const App = () => {
     );
 };
 
+const AppReal: React.FC<{}> = (props) => {
 
-export default App
+    return (
+        <SafeAreaProvider>
+            <AppInitializer/>
+        </SafeAreaProvider>
+    );
+};
+
+export default AppReal;
