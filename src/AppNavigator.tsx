@@ -6,6 +6,7 @@ import {Icon} from "native-base";
 import {AppearanceProvider} from 'react-native-appearance';
 import AuthScreen from "./screens/Auth";
 import {SafeAreaProvider} from "react-native-safe-area-context";
+import RegisterScreen from "./screens/Register";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +27,7 @@ const AppNavigator: React.FC<{}> = (props: {}) => {
                     <Tab.Navigator initialRouteName="Auth">
                         <Tab.Screen name="Autenticarse" component={AuthScreen}
                                     options={{tabBarIcon: props1 => iconTab(props1, "person")}}/>
-                        <Tab.Screen name="Registrarse" component={AuthScreen}
+                        <Tab.Screen name="Registrarse" component={RegisterScreen}
                                     options={{tabBarIcon: props1 => iconTab(props1, "person-add")}}/>
                         <Tab.Screen name="Inicio" component={HomeScreen}
                                     options={{tabBarIcon: props1 => iconTab(props1, "home")}}/>

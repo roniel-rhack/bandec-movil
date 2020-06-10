@@ -1,10 +1,11 @@
-import React, {Fragment, useEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {Formik} from "formik";
-import {Dimensions, Image, PermissionsAndroid, StyleSheet} from "react-native";
-import {Button, Card, CardItem, Container, Text, Toast} from "native-base";
+import {Button, Card, CardItem, Container, Spinner, Text} from "native-base";
 import InputWithLabel from "../components/InputWithLabel";
 import CheckBoxWithLabel from "../components/CheckBoxWithLabel";
 import * as yup from "yup";
+import {Animated, Dimensions, SafeAreaView, StyleSheet} from "react-native";
+import ImageBackground from "../components/ImageBackground";
 
 interface authValues {
     clave: string;
@@ -16,12 +17,15 @@ export const initialValue: authValues = {
     remember: false
 }
 
-const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
+const {width: screenWidth} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     form: {
         position: "absolute",
         bottom: 0,
+        left: -2
+    },
+    card: {
         marginBottom: 0,
         width: screenWidth,
         maxWidth: 500,
@@ -34,42 +38,67 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     chkBoxRem: {
-        margin: 20
+        margin: 20,
     },
     clave: {},
-    imgBack: {width: screenWidth, height: screenHeight, resizeMode: "cover", position: "absolute"}
 });
 // TODO TRABAJANDO AUN AKI <<<
 const AuthScreen: React.FC<{}> = (props) => {
+    const sliceAnim = useRef(new Animated.Value(400)).current;
+    const sliceIn = () => {
+        return Animated.timing(sliceAnim, {
+            toValue: 0,
+            duration: 350
+        });
+    };
+    const sliceOut = () => {
+        return Animated.timing(sliceAnim, {
+            toValue: 400,
+            duration: 350
+        });
+    };
+    useEffect(() => {
+        sliceIn().start();
+    }, [])
+
     return (
         <Container>
+            <ImageBackground source={require('../../images/BackgroundCleared.png')}/>
             <Formik validationSchema={AuthScreenSchemaValidation}
                     initialValues={initialValue}
-                    onSubmit={async (values, {setSubmitting}) => {
+                    onSubmit={(values, {setSubmitting}) => {
                         setSubmitting(true);
-                        //// All actions here
-                        setSubmitting(false);
+                        setTimeout(() => {
+                            sliceOut().start();
+                            setSubmitting(false);
+                        }, 3500);
                     }}
             >
                 {(formikBag) => (
-                    <Fragment>
-                        <Image style={styles.imgBack} source={require('../../images/BackgroundCleared.png')}/>
-                        <Card style={styles.form}>
-                            <CardItem header>
-                                <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
-                            </CardItem>
-                            <InputWithLabel secureTextEntry style={styles.clave} formikBag={formikBag}
-                                            label="Clave de autenticación" name="clave"/>
-                            <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Recordar clave"
-                                               name="remember"/>
+                    <SafeAreaView style={styles.form}>
+                        <Animated.View style={{translateY: sliceAnim}}>
+                            <Card style={styles.card}>
+                                <CardItem header>
+                                    <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
+                                </CardItem>
+                                <InputWithLabel secureTextEntry style={styles.clave} formikBag={formikBag}
+                                                label="Clave de autenticación" name="clave"/>
+                                <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Recordar clave"
+                                                   name="remember"/>
 
-                            <CardItem footer style={styles.btnTxt}>
-                                <Button bordered danger onPress={() => formikBag.submitForm()}>
-                                    <Text>AUTENTICARSE</Text>
-                                </Button>
-                            </CardItem>
-                        </Card>
-                    </Fragment>
+                                <CardItem footer style={styles.btnTxt}>
+                                    {!formikBag.isSubmitting
+                                        ?
+                                        <Button bordered danger onPress={() => formikBag.submitForm()}
+                                                disabled={formikBag.isSubmitting}>
+                                            <Text>AUTENTICARSE</Text>
+                                        </Button>
+                                        : <Button transparent><Spinner/></Button>
+                                    }
+                                </CardItem>
+                            </Card>
+                        </Animated.View>
+                    </SafeAreaView>
                 )}
             </Formik>
         </Container>
