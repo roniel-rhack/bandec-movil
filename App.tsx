@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, PermissionsAndroid} from 'react-native';
+import {Image, PermissionsAndroid, YellowBox} from 'react-native';
 import {
     Body,
     Button,
@@ -90,7 +90,7 @@ const App = () => {
 };
 
 const AppReal: React.FC<{}> = (props) => {
-
+    YellowBox.ignoreWarnings(['Animated: `useNativeDriver` was not specified.']);
     return (
         <AppInitializer/>
     );
