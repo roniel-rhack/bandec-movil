@@ -1,7 +1,7 @@
 import React from "react";
-import Carousel from "react-native-snap-carousel";
+import Carousel, {CarouselStatic} from "react-native-snap-carousel";
 import {Dimensions} from "react-native";
-import CardComponentCarousel from "./Card";
+import CardComponentToCarousel from "./Card";
 import CardModel from "../models/Card";
 
 
@@ -14,11 +14,14 @@ const listCards: CardModel[] = [
 ]
 
 const CardCarouselComponent: React.FC<any> = (props) => {
+    let carouselRef: CarouselStatic<any> | null;
     return (
-        <Carousel
-            sliderWidth={screenWidth} sliderHeight={screenWidth} itemWidth={screenWidth - 60}
-            data={listCards} renderItem={CardComponentCarousel} hasParallaxImages={true}
-            onSnapToItem={slideIndex => console.log('onSnapToItem', slideIndex)}
+        <Carousel ref={(c: CarouselStatic<any> | null) => carouselRef = c}
+                  sliderWidth={screenWidth} sliderHeight={screenWidth} itemWidth={screenWidth - 60}
+                  data={listCards} renderItem={CardComponentToCarousel} hasParallaxImages={true}
+                  onSnapToItem={slideIndex => {
+                      slideIndex === 4 ? carouselRef?.snapToItem(0) : null;
+                  }}
         />
     )
 }

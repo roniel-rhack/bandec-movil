@@ -8,9 +8,9 @@ interface InputWithLabelProps extends NativeBase.Item {
     name: string;
 }
 
-
 const InputWithLabel: React.FC<InputWithLabelProps> = (props: InputWithLabelProps) => {
     const {handleChange, handleBlur, values, isSubmitting, errors} = props.formikBag;
+
     return (
         <Item floatingLabel {...props} error={!!errors[props.name]}>
             <Label>{props.label}</Label>
@@ -23,7 +23,8 @@ const InputWithLabel: React.FC<InputWithLabelProps> = (props: InputWithLabelProp
             {!!errors[props.name]
                 ? <Icon name="close-circle" onPress={() =>
                     Toast.show({
-                        text: errors[props.name],
+                        // @ts-ignore
+                        text: errors[props?.name],
                         duration: 3500,
                         buttonText: "Leido"
                     })}/>

@@ -79,6 +79,8 @@ target 'BandecMovil' do
 
   pod 'react-native-appearance', :path => '../node_modules/react-native-appearance'
 
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+
   target 'BandecMovilTests' do
     inherit! :complete
     # Pods for testing

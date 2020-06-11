@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const CardComponentCarousel: React.FC<CardComponentProps> = (props, parallaxProps: AdditionalParallaxProps) => {
+const CardComponentToCarousel: React.FC<CardComponentProps> = (props, parallaxProps: AdditionalParallaxProps) => {
     const {expDate, name, pan} = props.item;
     const moneda: monedas = monedaCard(pan);
     const img = require("../../images/cardBANDEC.png")
@@ -72,4 +72,4 @@ const CardComponentCarousel: React.FC<CardComponentProps> = (props, parallaxProp
     );
 };
 
-export default CardComponentCarousel;
+export default CardComponentToCarousel;

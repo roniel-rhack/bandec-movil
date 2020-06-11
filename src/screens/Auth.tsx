@@ -1,11 +1,12 @@
-import React, {useEffect, useRef} from "react";
+import React from "react";
 import {Formik} from "formik";
-import {Button, Card, CardItem, Container, Spinner, Text} from "native-base";
+import {Button, CardItem, Container, Spinner, Text} from "native-base";
 import InputWithLabel from "../components/InputWithLabel";
 import CheckBoxWithLabel from "../components/CheckBoxWithLabel";
 import * as yup from "yup";
-import {Animated, Dimensions, SafeAreaView, StyleSheet} from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
 import ImageBackground from "../components/ImageBackground";
+import FooterForm from "../components/FooterForm";
 
 interface authValues {
     clave: string;
@@ -44,22 +45,6 @@ const styles = StyleSheet.create({
 });
 // TODO TRABAJANDO AUN AKI <<<
 const AuthScreen: React.FC<{}> = (props) => {
-    const sliceAnim = useRef(new Animated.Value(400)).current;
-    const sliceIn = () => {
-        return Animated.timing(sliceAnim, {
-            toValue: 0,
-            duration: 350
-        });
-    };
-    const sliceOut = () => {
-        return Animated.timing(sliceAnim, {
-            toValue: 400,
-            duration: 350
-        });
-    };
-    useEffect(() => {
-        sliceIn().start();
-    }, [])
 
     return (
         <Container>
@@ -69,36 +54,31 @@ const AuthScreen: React.FC<{}> = (props) => {
                     onSubmit={(values, {setSubmitting}) => {
                         setSubmitting(true);
                         setTimeout(() => {
-                            sliceOut().start();
                             setSubmitting(false);
                         }, 3500);
                     }}
             >
                 {(formikBag) => (
-                    <SafeAreaView style={styles.form}>
-                        <Animated.View style={{translateY: sliceAnim}}>
-                            <Card style={styles.card}>
-                                <CardItem header>
-                                    <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
-                                </CardItem>
-                                <InputWithLabel secureTextEntry style={styles.clave} formikBag={formikBag}
-                                                label="Clave de autenticación" name="clave"/>
-                                <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Recordar clave"
-                                                   name="remember"/>
+                    <FooterForm>
+                        <CardItem header>
+                            <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
+                        </CardItem>
+                        <InputWithLabel secureTextEntry style={styles.clave} formikBag={formikBag}
+                                        label="Clave de autenticación" name="clave"/>
+                        <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Recordar clave"
+                                           name="remember"/>
 
-                                <CardItem footer style={styles.btnTxt}>
-                                    {!formikBag.isSubmitting
-                                        ?
-                                        <Button bordered danger onPress={() => formikBag.submitForm()}
-                                                disabled={formikBag.isSubmitting}>
-                                            <Text>AUTENTICARSE</Text>
-                                        </Button>
-                                        : <Button transparent><Spinner/></Button>
-                                    }
-                                </CardItem>
-                            </Card>
-                        </Animated.View>
-                    </SafeAreaView>
+                        <CardItem footer style={styles.btnTxt}>
+                            {!formikBag.isSubmitting
+                                ?
+                                <Button bordered danger onPress={() => formikBag.submitForm()}
+                                        disabled={formikBag.isSubmitting}>
+                                    <Text>AUTENTICARSE</Text>
+                                </Button>
+                                : <Button transparent><Spinner/></Button>
+                            }
+                        </CardItem>
+                    </FooterForm>
                 )}
             </Formik>
         </Container>
