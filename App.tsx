@@ -19,6 +19,7 @@ import {
 } from 'native-base';
 
 import UssdDialer from './src/native/UssdDialer';
+import AppInitializer from "./src/AppInitializer";
 
 // @ts-ignore
 import Ussd, {ussdEventEmitter} from 'react-native-ussd';
@@ -149,5 +150,11 @@ const App = () => {
     );
 };
 
+const AppReal: React.FC<{}> = (props) => {
 
-export default App
+    return (
+        <AppInitializer/>
+    );
+};
+
+export default AppReal;
