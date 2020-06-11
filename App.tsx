@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, PermissionsAndroid} from 'react-native';
 import {
     Body,
@@ -20,8 +20,65 @@ import {
 
 import UssdDialer from './src/native/UssdDialer';
 
+// @ts-ignore
+import Ussd, {ussdEventEmitter} from 'react-native-ussd';
+// @ts-ignore
+import { DeviceEventEmitter } from 'react-native';
+
+const SMS_RECEIVED_EVENT = 'com.centaurwarchief.smslistener:smsReceived';
+
 const App = () => {
     const [javaMessage, setJavaMEssage] = useState('');
+
+
+    useEffect(()=>{
+        console.log('mounting ...');
+
+       const mySubScription = DeviceEventEmitter.addListener(
+            SMS_RECEIVED_EVENT,
+            (message: any)=>{
+                console.log(message);
+            }
+        );
+
+        const eventListener = ussdEventEmitter.addListener('ussdEvent', (event: { ussdReply: string; }) => {
+            try {
+                let balance = event.ussdReply.split(',')[0].split(' ')[1];
+                let date = event.ussdReply.split(' vence ')[0].split(' hasta ')[1];
+                let mess = balance+' '+date;
+                setJavaMEssage(mess);
+
+                //SendIntentAndroid.sendPhoneCall("*133#", true);
+            }catch (e){
+                console.log(e);
+            }
+
+        });
+
+        return ()=>{
+            console.log('removing ...');
+            eventListener.remove();
+            mySubScription.remove();
+        }
+    }, []);
+
+    const checkBalance = async () => {
+        let granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+            {
+                title: 'I need to make some calls',
+                message: 'Give me permission to make calls ',
+                buttonPositive: 'ok'
+            },
+        );
+
+        if (granted) {
+            console.log('CAN Make Calls');
+            Ussd.dial('*222#');
+        } else {
+            console.log('CALL MAKING Permission Denied');
+        }
+    };
 
     return (
         <Container>
@@ -60,9 +117,11 @@ const App = () => {
                     <CardItem>
                         <Left>
                             <Button transparent textStyle={{color: '#87838B'}} onPress={async () => {
-                                PermissionsAndroid.requestMultiple(["android.permission.CALL_PHONE", "android.permission.READ_PHONE_STATE"])
-                                    .then(({"android.permission.CALL_PHONE": call, "android.permission.READ_PHONE_STATE": state}) => {
-                                        if (call === 'granted' && state === 'granted') {
+                                PermissionsAndroid.requestMultiple(["android.permission.CALL_PHONE", "android.permission.READ_PHONE_STATE",
+                                    "android.permission.RECEIVE_SMS", "android.permission.READ_SMS"])
+                                    .then(({"android.permission.CALL_PHONE": call, "android.permission.READ_PHONE_STATE": state,
+                                               "android.permission.RECEIVE_SMS":receive_sms, "android.permission.READ_SMS":read_sms}) => {
+                                        if (call === 'granted' && state === 'granted' && receive_sms==='granted' && read_sms === 'granted') {
                                             UssdDialer.autenticateUSSDCode("10289").then((message: string) => {
                                                 setJavaMEssage(message);
                                                 console.log(message);
@@ -79,7 +138,9 @@ const App = () => {
             </Content>
             <Footer>
                 <FooterTab>
-                    <Button full>
+                    <Button full onPress={()=>{
+                        checkBalance();
+                    }}>
                         <Text>{javaMessage}</Text>
                     </Button>
                 </FooterTab>

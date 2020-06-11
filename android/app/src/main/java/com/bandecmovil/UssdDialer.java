@@ -66,4 +66,5 @@ public class UssdDialer extends ReactContextBaseJavaModule{
             promise.reject("Error", e.getMessage());
         }
     }
+
 }
