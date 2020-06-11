@@ -20,6 +20,8 @@
     "native-base": "^2.13.12",
     "react": "16.11.0",
     "react-native": "0.62.2",
+    "react-native-android-sms-listener": "^0.7.0",
+    "react-native-ussd": "^1.0.21",
     "react-native-appearance": "^0.3.4",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.9.0",

@@ -2,6 +2,9 @@ package com.bandecmovil;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.IntentFilter;
+import android.provider.Telephony;
+
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;
@@ -17,6 +20,7 @@ import java.util.List;
 import com.bandecmovil.UssdDialer;
 
 public class MainApplication extends Application implements ReactApplication {
+
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -49,9 +53,15 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
 
   /**
    * Loads Flipper in React Native templates. Call this in the onCreate method with something like
