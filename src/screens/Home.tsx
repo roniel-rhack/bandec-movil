@@ -1,5 +1,5 @@
 import React from "react";
-import CardCarouselComponent from "../components/CardCarousel";
+import CardCarouselComponent from "../components/CarouselCards";
 import {Button, Icon, Text, View} from "native-base";
 import {StyleSheet} from "react-native";
 

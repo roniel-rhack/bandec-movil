@@ -35,7 +35,6 @@ const FooterForm: React.FC = (props) => {
             toValue: 400,
             duration: 350,
             useNativeDriver: false
-
         });
     };
     useEffect(() => {

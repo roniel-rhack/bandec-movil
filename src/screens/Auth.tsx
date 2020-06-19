@@ -7,6 +7,7 @@ import * as yup from "yup";
 import {Dimensions, StyleSheet} from "react-native";
 import ImageBackground from "../components/ImageBackground";
 import FooterForm from "../components/FooterForm";
+import ReactNativeBiometrics from 'react-native-biometrics'
 
 interface authValues {
     clave: string;
@@ -46,6 +47,20 @@ const styles = StyleSheet.create({
 // TODO TRABAJANDO AUN AKI <<<
 const AuthScreen: React.FC<{}> = (props) => {
 
+    // ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
+    //     .then((resultObject) => {
+    //         const {success} = resultObject
+    //
+    //         if (success) {
+    //             console.log('successful biometrics provided')
+    //         } else {
+    //             console.log('user cancelled biometric prompt')
+    //         }
+    //     })
+    //     .catch(() => {
+    //         console.log('biometrics failed')
+    //     })
+
     return (
         <Container>
             <ImageBackground source={require('../../images/BackgroundCleared.png')}/>
@@ -64,7 +79,7 @@ const AuthScreen: React.FC<{}> = (props) => {
                             <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
                         </CardItem>
                         <InputWithLabel secureTextEntry style={styles.clave} formikBag={formikBag}
-                                        label="Clave de autenticación" name="clave"/>
+                                        label="Clave de autenticación:" name="clave" keyboardType="numeric"/>
                         <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Recordar clave"
                                            name="remember"/>
 

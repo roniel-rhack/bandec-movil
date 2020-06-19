@@ -1,5 +1,6 @@
 export default interface CardModel {
     pan: string;
-    expDate: string;
+    expYear: string | null;
+    expMonth: string | null;
     name: string;
 }

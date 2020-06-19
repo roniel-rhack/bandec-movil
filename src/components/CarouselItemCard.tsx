@@ -1,9 +1,9 @@
 import React from "react";
-import {Image, Platform, StyleSheet, View} from "react-native";
+import {Platform, StyleSheet, View} from "react-native";
 import {Text} from 'native-base';
 import {AdditionalParallaxProps, ParallaxImage} from "react-native-snap-carousel";
 import CardModel from "../models/Card";
-import {monedaCard, monedas, panCardVisualizer} from "../utils/cardProcess";
+import {monedaCard, monedas, panCardVisualizerEncode} from "../utils/cardProcess";
 
 export interface CardComponentProps {
     item: CardModel,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 })
 
 const CardComponentToCarousel: React.FC<CardComponentProps> = (props, parallaxProps: AdditionalParallaxProps) => {
-    const {expDate, name, pan} = props.item;
+    const {expYear, expMonth, name, pan} = props.item;
     const moneda: monedas = monedaCard(pan);
     const img = require("../../images/cardBANDEC.png")
     return (
@@ -62,9 +62,9 @@ const CardComponentToCarousel: React.FC<CardComponentProps> = (props, parallaxPr
                 parallaxFactor={0.04}
                 {...parallaxProps}
             />
-            <Text style={styles.cardNumber}>{panCardVisualizer(pan)}</Text>
+            <Text style={styles.cardNumber}>{panCardVisualizerEncode(pan)}</Text>
             <Text style={styles.cardName}>{name}</Text>
-            <Text style={styles.cardExp}>VENCE: {expDate}</Text>
+            <Text style={styles.cardExp}>VENCE: {`${expMonth}/${expYear}`}</Text>
             {moneda === monedas.CUP
                 ? <Text style={styles.cardMoneda}>CUP</Text>
                 : null}

@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const ImageBackground: React.FC<ImageBase> = (props) => {
+const ImageBackground: React.FC<any> = (props) => {
     return (
         <Image style={styles.imgBack} {...props}/>
     );

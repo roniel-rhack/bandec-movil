@@ -26,9 +26,15 @@ const AppNavigator: React.FC<{}> = (props: {}) => {
                 <NavigationContainer theme={DefaultTheme}>
                     <Tab.Navigator initialRouteName="Auth">
                         <Tab.Screen name="Autenticarse" component={AuthScreen}
-                                    options={{tabBarIcon: props1 => iconTab(props1, "person")}}/>
+                                    options={{
+                                        tabBarIcon: props1 => iconTab(props1, "person"),
+                                        unmountOnBlur: true
+                                    }}/>
                         <Tab.Screen name="Registrarse" component={RegisterScreen}
-                                    options={{tabBarIcon: props1 => iconTab(props1, "person-add")}}/>
+                                    options={{
+                                        tabBarIcon: props1 => iconTab(props1, "person-add"),
+                                        unmountOnBlur: true
+                                    }}/>
                         <Tab.Screen name="Inicio" component={HomeScreen}
                                     options={{tabBarIcon: props1 => iconTab(props1, "home")}}/>
                         <Tab.Screen name="Servicios" component={HomeScreen}

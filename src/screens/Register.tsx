@@ -1,30 +1,35 @@
-import React from "react";
-import {Container} from "native-base";
-import {Dimensions, Image, StyleSheet} from "react-native";
+import React, {Fragment, useEffect, useState} from "react";
+import {Body, Button, CardItem, Container, Left, Right, Spinner, Text, View} from "native-base";
 import FooterForm from "../components/FooterForm";
 import {Formik} from "formik";
 import InputWithLabel from "../components/InputWithLabel";
 import CardModel from "../models/Card";
-import MonthSelectorCalendar from "react-native-month-selector";
+import CardImage from "../components/CardImage";
+import PickerYear from "../components/PickerYear";
+import PickerMonth from "../components/PickerMonth";
+import {StyleSheet} from "react-native";
+import useKeyboardHandle from "../hooks/useKeyboardHandle";
 
-const card = {pan: "9225069990012770", name: "MARCOS MACIAS SANCHEZ", expDate: "10/14"};
-const {width: screenWidth} = Dimensions.get('window');
-
+const initialValue: CardModel = {pan: "", name: "", expYear: null, expMonth: null}
 const styles = StyleSheet.create({
-    cardImg: {
-        width: screenWidth,
-        height: screenWidth * 0.7,
-        maxHeight: 500,
-        resizeMode: "contain"
+    btnTxt: {
+        alignSelf: "center"
     },
-})
-
-const initialValue: CardModel = {pan: "", name: "", expDate: ""}
-
+    cardDetails: {
+        zIndex: -1
+    },
+});
 const RegisterScreen: React.FC = (props) => {
+
+    const keyboardHandle = useKeyboardHandle();
+    const [inputFocus, setInputFocus] = useState("");
+
+    useEffect(() => {
+        console.log('focus', inputFocus)
+    }, [inputFocus])
+
     return (
         <Container>
-            <Image source={require('../../images/cardBANDEC.png')} style={styles.cardImg}/>
             <Formik
                 initialValues={initialValue}
                 onSubmit={(values, {setSubmitting}) => {
@@ -34,12 +39,54 @@ const RegisterScreen: React.FC = (props) => {
                     }, 3500);
                 }}
             >
-                {(formikBag) => (
-                    <FooterForm>
-                        <InputWithLabel formikBag={formikBag} label="Número de tarjeta" name="pan"/>
-                        <InputWithLabel formikBag={formikBag} label="Nombre y apellidos" name="name"/>
-                    </FooterForm>
-                )}
+                {(formikBag) =>
+                    (
+                        <Fragment>
+                            <CardImage pan={formikBag.values.pan} name={formikBag.values.name}
+                                       style={styles.cardDetails}
+                                       venc={`${formikBag.values.expMonth}/${formikBag.values.expYear}`}/>
+                            <FooterForm>
+                                {!keyboardHandle.keyboardOpen
+                                    ? <CardItem header>
+                                        <Text>Introduzca los datos de una de sus tarjetas para registrarse.</Text>
+                                    </CardItem> : null}
+                                {!keyboardHandle.keyboardOpen || (keyboardHandle.keyboardOpen && inputFocus === "pan")
+                                    ? <InputWithLabel type="card number" formikBag={formikBag} keyboardType="numeric"
+                                                      label="Número de Tarjeta:" name="pan"
+                                                      setInputFocus={setInputFocus}
+                                                      style={{}}/>
+                                    : null}
+                                {!keyboardHandle.keyboardOpen || (keyboardHandle.keyboardOpen && inputFocus === "name")
+                                    ? <InputWithLabel inlineLabel formikBag={formikBag} keyboardType="default"
+                                                      label="Títular:" name="name" type="card name"
+                                                      setInputFocus={setInputFocus}/>
+                                    : null}
+                                {!keyboardHandle.keyboardOpen
+                                    ? <View style={{display: "flex", flexDirection: "row"}}>
+                                        <Left>
+                                            <Text>Vencimiento:</Text>
+                                        </Left>
+                                        <Body>
+                                            <PickerMonth name="expMonth" formikBag={formikBag}/>
+                                        </Body>
+                                        <Right>
+                                            <PickerYear name="expYear" formikBag={formikBag}/>
+                                        </Right>
+                                    </View> : null}
+                                {!keyboardHandle.keyboardOpen
+                                    ? (<CardItem footer style={styles.btnTxt}>
+                                        {!formikBag.isSubmitting
+                                            ?
+                                            <Button bordered danger onPress={() => formikBag.submitForm()}
+                                                    disabled={formikBag.isSubmitting}>
+                                                <Text>REGISTRARSE</Text>
+                                            </Button>
+                                            : <Button transparent><Spinner/></Button>
+                                        }
+                                    </CardItem>) : null}
+                            </FooterForm>
+                        </Fragment>
+                    )}
             </Formik>
         </Container>
     );
