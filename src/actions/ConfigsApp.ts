@@ -8,7 +8,9 @@ export const LoadConfigsApp = () => {
         dispatch({type: ConfigsAppTypes.LoadingBegin});
         AsyncStorage.getItem("ConfigsApp")
             .then(value => {
-                dispatch({type: ConfigsAppTypes.LoadingSuccess, payload: value});
+                setTimeout(() => {
+                    dispatch({type: ConfigsAppTypes.LoadingSuccess, payload: value});
+                }, 2500)
             })
             .catch(reason => {
                 dispatch({type: ConfigsAppTypes.LoadingFailure, payload: reason});

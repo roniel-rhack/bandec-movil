@@ -62,7 +62,7 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
                     const {success} = resultObject
                     if (success) {
                         console.log('successful biometrics provided')
-                        setWaitBiometric(false);
+                        // setWaitBiometric(false);
                     } else {
                         console.log('user cancelled biometric prompt')
                         setWaitBiometric(false);
@@ -95,13 +95,18 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
                                 <CardItem header>
                                     <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
                                 </CardItem>
-                                {props.configsApp.claveRegistro ? (
-                                    <Text>Código de autenticación:
-                                        {`${props.configsApp.claveRegistro.posPIN} ${props.configsApp.claveRegistro.coord1} ${props.configsApp.claveRegistro.coord2}`}</Text>
-                                ) : null}
                                 <InputWithLabel secureTextEntry={!formikBag.values.show} style={styles.clave}
                                                 formikBag={formikBag}
                                                 label="Clave de autenticación:" name="clave" keyboardType="numeric"/>
+
+                                {props.configsApp.claveRegistro ? (
+                                    <Fragment>
+                                        <Text>Datos necesarios de la Multibanca:</Text>
+                                        <Text>Posición {`${props.configsApp.claveRegistro.posPIN}`} del PIN</Text>
+                                        <Text>Coordenada {`${props.configsApp.claveRegistro.coord1}`}</Text>
+                                        <Text>Coordenada {`${props.configsApp.claveRegistro.coord2}`}</Text>
+                                    </Fragment>
+                                ) : null}
                                 <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Mostrar clave"
                                                    name="show" textHelp=""/>
 

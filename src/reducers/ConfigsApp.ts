@@ -8,6 +8,11 @@ const ConfigsApp = (state: ConfigsAppModel = ConfigsAppInitialState, {type, payl
                 ...state,
                 claveRegistro: payload as registerCodeModel
             }
+        case ConfigsAppTypes.LoadingSuccess:
+            return {
+                ...state,
+                state: ConfigsAppState.completed
+            }
         default:
             return state;
     }
