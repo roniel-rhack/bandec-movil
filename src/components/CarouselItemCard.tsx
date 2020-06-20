@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment, useState} from "react";
 import {Platform, StyleSheet, View} from "react-native";
 import {Text} from 'native-base';
 import {AdditionalParallaxProps, ParallaxImage} from "react-native-snap-carousel";
@@ -7,7 +7,9 @@ import {monedaCard, monedas, panCardVisualizerEncode} from "../utils/cardProcess
 
 export interface CardComponentProps {
     item: CardModel,
-    index: number
+    index: number,
+    parallaxProps: AdditionalParallaxProps | undefined
+    disableFormat?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -49,25 +51,27 @@ const styles = StyleSheet.create({
     }
 })
 
-const CardComponentToCarousel: React.FC<CardComponentProps> = (props, parallaxProps: AdditionalParallaxProps) => {
+const CardComponentToCarousel: React.FC<CardComponentProps> = (props) => {
+    const [loadEnd, setLoadEnd] = useState(false);
     const {expYear, expMonth, name, pan} = props.item;
     const moneda: monedas = monedaCard(pan);
     const img = require("../../images/cardBANDEC.png")
     return (
         <View style={styles.item}>
-            <ParallaxImage
-                source={img}
-                containerStyle={styles.imageContainer}
-                style={styles.image} showSpinner
-                parallaxFactor={0.04}
-                {...parallaxProps}
-            />
-            <Text style={styles.cardNumber}>{panCardVisualizerEncode(pan)}</Text>
-            <Text style={styles.cardName}>{name}</Text>
-            <Text style={styles.cardExp}>VENCE: {`${expMonth}/${expYear}`}</Text>
-            {moneda === monedas.CUP
-                ? <Text style={styles.cardMoneda}>CUP</Text>
-                : null}
+            <ParallaxImage onLoadEnd={() => setLoadEnd(true)} onLoadStart={() => setLoadEnd(false)}
+                           source={img} containerStyle={styles.imageContainer} style={styles.image} showSpinner
+                           parallaxFactor={0.04} {...props.parallaxProps}/>
+            {loadEnd ? (
+                <Fragment>
+                    <Text style={styles.cardNumber}>{props.disableFormat ? pan : panCardVisualizerEncode(pan)}</Text>
+                    <Text style={styles.cardName}>{name.toUpperCase()}</Text>
+                    <Text style={styles.cardExp}>VENCE: {`${expMonth}/${expYear}`}</Text>
+                    {moneda === monedas.CUP
+                        ? <Text style={styles.cardMoneda}>CUP</Text>
+                        : null}
+                </Fragment>
+            ) : null}
+
         </View>
     );
 };

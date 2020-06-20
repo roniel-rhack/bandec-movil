@@ -20,6 +20,8 @@ import {
 
 import UssdDialer from './src/native/UssdDialer';
 import AppInitializer from "./src/AppInitializer";
+import {Provider} from "react-redux";
+import store from "./src/store";
 
 const App = () => {
     const [javaMessage, setJavaMEssage] = useState('');
@@ -92,7 +94,9 @@ const App = () => {
 const AppReal: React.FC<{}> = (props) => {
     YellowBox.ignoreWarnings(['Animated: `useNativeDriver` was not specified.']);
     return (
-        <AppInitializer/>
+        <Provider store={store}>
+            <AppInitializer/>
+        </Provider>
     );
 };
 

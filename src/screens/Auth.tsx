@@ -8,6 +8,9 @@ import {Dimensions, StyleSheet} from "react-native";
 import ImageBackground from "../components/ImageBackground";
 import FooterForm from "../components/FooterForm";
 import ReactNativeBiometrics from 'react-native-biometrics'
+import {connect} from "react-redux";
+import {rootStateModel} from "../reducers";
+import {ConfigsAppModel, ConfigsAppState} from "../reducers/ConfigsApp";
 
 interface authValues {
     clave: string;
@@ -20,7 +23,6 @@ export const initialValue: authValues = {
 }
 
 const {width: screenWidth} = Dimensions.get('window');
-
 const styles = StyleSheet.create({
     form: {
         position: "absolute",
@@ -44,22 +46,28 @@ const styles = StyleSheet.create({
     },
     clave: {},
 });
-// TODO TRABAJANDO AUN AKI <<<
-const AuthScreen: React.FC<{}> = (props) => {
 
-    // ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
-    //     .then((resultObject) => {
-    //         const {success} = resultObject
-    //
-    //         if (success) {
-    //             console.log('successful biometrics provided')
-    //         } else {
-    //             console.log('user cancelled biometric prompt')
-    //         }
-    //     })
-    //     .catch(() => {
-    //         console.log('biometrics failed')
-    //     })
+export interface AuthScreenProps {
+    configsApp: ConfigsAppModel
+}
+
+// TODO TRABAJANDO AUN AKI <<<
+const AuthScreen: React.FC<AuthScreenProps> = (props) => {
+
+    if (props.configsApp.biometrics && props.configsApp.registrado && props.configsApp.state === ConfigsAppState.completed)
+        ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
+            .then((resultObject) => {
+                const {success} = resultObject
+
+                if (success) {
+                    console.log('successful biometrics provided')
+                } else {
+                    console.log('user cancelled biometric prompt')
+                }
+            })
+            .catch(() => {
+                console.log('biometrics failed')
+            })
 
     return (
         <Container>
@@ -109,7 +117,11 @@ const AuthScreenSchemaValidation = yup.object<authValues>({
                 return value == parseInt(value);
             }
         ),
-    remember: yup.boolean()
+    remember: yup.boolean().notRequired()
 })
 
-export default AuthScreen;
+const mapStateToProps = (state: rootStateModel) => ({
+    configsApp: state.ConfigsApp
+})
+
+export default connect(mapStateToProps)(AuthScreen);

@@ -1,14 +1,16 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useState} from "react";
 import {Body, Button, CardItem, Container, Left, Right, Spinner, Text, View} from "native-base";
 import FooterForm from "../components/FooterForm";
 import {Formik} from "formik";
 import InputWithLabel from "../components/InputWithLabel";
 import CardModel from "../models/Card";
-import CardImage from "../components/CardImage";
 import PickerYear from "../components/PickerYear";
 import PickerMonth from "../components/PickerMonth";
-import {StyleSheet} from "react-native";
+import {PermissionsAndroid, StyleSheet} from "react-native";
 import useKeyboardHandle from "../hooks/useKeyboardHandle";
+import CardCarouselComponent from "../components/CarouselCards";
+import UssdDialer from "../native/UssdDialer";
+import {cardNumberClear} from "../utils/cardProcess";
 
 const initialValue: CardModel = {pan: "", name: "", expYear: null, expMonth: null}
 const styles = StyleSheet.create({
@@ -20,13 +22,8 @@ const styles = StyleSheet.create({
     },
 });
 const RegisterScreen: React.FC = (props) => {
-
     const keyboardHandle = useKeyboardHandle();
     const [inputFocus, setInputFocus] = useState("");
-
-    useEffect(() => {
-        console.log('focus', inputFocus)
-    }, [inputFocus])
 
     return (
         <Container>
@@ -34,17 +31,28 @@ const RegisterScreen: React.FC = (props) => {
                 initialValues={initialValue}
                 onSubmit={(values, {setSubmitting}) => {
                     setSubmitting(true);
-                    setTimeout(() => {
-                        setSubmitting(false);
-                    }, 3500);
+                    UssdDialer.registerUSSDCode(cardNumberClear(values.pan),
+                        values.name.toUpperCase(), `${values.expYear}${values.expMonth}`)
+                        .then(value => {
+                            console.log('ussd register', value);
+                            setSubmitting(false);
+                        })
+                        .catch(reason => {
+                            console.log('ussd register error', reason);
+                            setSubmitting(false);
+                        })
                 }}
             >
                 {(formikBag) =>
                     (
                         <Fragment>
-                            <CardImage pan={formikBag.values.pan} name={formikBag.values.name}
-                                       style={styles.cardDetails}
-                                       venc={`${formikBag.values.expMonth}/${formikBag.values.expYear}`}/>
+                            {/*<CardImage pan={formikBag.values.pan} name={formikBag.values.name}*/}
+                            {/*           style={styles.cardDetails}*/}
+                            {/*           venc={`${formikBag.values.expMonth}/${formikBag.values.expYear}`}/>*/}
+                            <CardCarouselComponent disableFormat listCards={[{
+                                name: formikBag.values.name, expYear: formikBag.values.expYear,
+                                pan: formikBag.values.pan, expMonth: formikBag.values.expMonth
+                            }]}/>
                             <FooterForm>
                                 {!keyboardHandle.keyboardOpen
                                     ? <CardItem header>
