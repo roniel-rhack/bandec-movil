@@ -1,6 +1,7 @@
 import {Dispatch} from "redux";
-import {ConfigsAppActionModel, ConfigsAppTypes} from "../reducers/ConfigsApp";
+import {ConfigsAppActionModel, registerCodeModel} from "../reducers/ConfigsApp";
 import AsyncStorage from '@react-native-community/async-storage';
+import ConfigsAppTypes from "../reducers/TypesApp";
 
 export const LoadConfigsApp = () => {
     return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
@@ -12,5 +13,11 @@ export const LoadConfigsApp = () => {
             .catch(reason => {
                 dispatch({type: ConfigsAppTypes.LoadingFailure, payload: reason});
             })
+    }
+}
+
+export const captureRegisterCode = (code: registerCodeModel) => {
+    return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
+        dispatch({type: ConfigsAppTypes.RegisterCodeChange, payload: code})
     }
 }

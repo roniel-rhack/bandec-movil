@@ -27,21 +27,28 @@ scheme === 'dark' ? DarkTheme : DefaultTheme
 */
 const AppNavigator: React.FC<AppNavigatorProps> = (props: AppNavigatorProps) => {
     // const scheme = useColorScheme();
+
     return (
         <AppearanceProvider>
             <SafeAreaProvider>
                 <NavigationContainer theme={DefaultTheme}>
-                    <Tab.Navigator initialRouteName={props.ConfigsApp.registrado ? "Autenticarse" : "Registrarse"}>
-                        <Tab.Screen name="Autenticarse" component={AuthScreen}
-                                    options={{
-                                        tabBarIcon: props1 => iconTab(props1, "person"),
-                                        unmountOnBlur: true
-                                    }}/>
-                        <Tab.Screen name="Registrarse" component={RegisterScreen}
-                                    options={{
-                                        tabBarIcon: props1 => iconTab(props1, "person-add"),
-                                        unmountOnBlur: true
-                                    }}/>
+                    <Tab.Navigator initialRouteName={props.ConfigsApp.registradoCompletado
+                        ? "Autenticarse" : "Registrarse"}>
+                        {!props.ConfigsApp.registradoCompletado ? (
+                            <Tab.Screen name="Autenticarse" component={AuthScreen}
+                                        options={{
+                                            tabBarIcon: props1 => iconTab(props1, "person"),
+                                            unmountOnBlur: true
+                                        }}/>
+                        ) : null}
+                        {!props.ConfigsApp.claveRegistro ? (
+                            <Tab.Screen name="Registrarse" component={RegisterScreen}
+                                        options={{
+                                            tabBarIcon: props1 => iconTab(props1, "person-add"),
+                                            unmountOnBlur: true
+                                        }}/>
+                        ) : null}
+
                         <Tab.Screen name="Inicio" component={HomeScreen}
                                     options={{tabBarIcon: props1 => iconTab(props1, "home")}}/>
                         <Tab.Screen name="Servicios" component={HomeScreen}

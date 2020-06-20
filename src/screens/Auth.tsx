@@ -14,12 +14,10 @@ import {ConfigsAppModel, ConfigsAppState} from "../reducers/ConfigsApp";
 
 interface authValues {
     clave: string;
-    remember: boolean;
 }
 
 export const initialValue: authValues = {
     clave: "",
-    remember: false
 }
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -54,11 +52,10 @@ export interface AuthScreenProps {
 // TODO TRABAJANDO AUN AKI <<<
 const AuthScreen: React.FC<AuthScreenProps> = (props) => {
 
-    if (props.configsApp.biometrics && props.configsApp.registrado && props.configsApp.state === ConfigsAppState.completed)
+    if (props.configsApp.biometrics && props.configsApp.registradoCompletado && props.configsApp.state === ConfigsAppState.completed)
         ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
             .then((resultObject) => {
                 const {success} = resultObject
-
                 if (success) {
                     console.log('successful biometrics provided')
                 } else {
@@ -86,10 +83,12 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
                         <CardItem header>
                             <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
                         </CardItem>
+                        {props.configsApp.claveRegistro ? (
+                            <Text>Código de autenticación:
+                                {`${props.configsApp.claveRegistro.posPIN} ${props.configsApp.claveRegistro.coord1} ${props.configsApp.claveRegistro.coord2}`}</Text>
+                        ) : null}
                         <InputWithLabel secureTextEntry style={styles.clave} formikBag={formikBag}
                                         label="Clave de autenticación:" name="clave" keyboardType="numeric"/>
-                        <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Recordar clave"
-                                           name="remember"/>
 
                         <CardItem footer style={styles.btnTxt}>
                             {!formikBag.isSubmitting
@@ -117,7 +116,6 @@ const AuthScreenSchemaValidation = yup.object<authValues>({
                 return value == parseInt(value);
             }
         ),
-    remember: yup.boolean().notRequired()
 })
 
 const mapStateToProps = (state: rootStateModel) => ({

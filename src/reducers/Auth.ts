@@ -18,6 +18,7 @@ export enum AuthState {
 
 export interface AuthModel {
     state: AuthState;
+    
 }
 
 export const AuthInitialState: AuthModel = {

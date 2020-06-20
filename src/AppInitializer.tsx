@@ -11,7 +11,8 @@ export interface AppInitializerProps {
 }
 
 const AppInitializer: React.FC<AppInitializerProps> = ({ConfigsApp, ...props}) => {
-    PermissionsAndroid.requestMultiple(["android.permission.CALL_PHONE", "android.permission.CALL_PHONE"]);
+    PermissionsAndroid.requestMultiple(["android.permission.CALL_PHONE", "android.permission.CALL_PHONE",
+    "android.permission.READ_SMS", "android.permission.RECEIVE_SMS"]);
 
     return (
         <Root>

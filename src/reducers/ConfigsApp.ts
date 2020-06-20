@@ -1,7 +1,13 @@
 import ActionModel from "../models/ActionModel";
+import ConfigsAppTypes from "./TypesApp";
 
 const ConfigsApp = (state: ConfigsAppModel = ConfigsAppInitialState, {type, payload}: ConfigsAppActionModel): ConfigsAppModel => {
     switch (type) {
+        case ConfigsAppTypes.RegisterCodeChange:
+            return {
+                ...state,
+                claveRegistro: payload as registerCodeModel
+            }
         default:
             return state;
     }
@@ -9,11 +15,6 @@ const ConfigsApp = (state: ConfigsAppModel = ConfigsAppInitialState, {type, payl
 
 export default ConfigsApp;
 
-export enum ConfigsAppTypes {
-    LoadingBegin,
-    LoadingSuccess,
-    LoadingFailure,
-}
 
 export interface ConfigsAppActionModel<P = any, T = ConfigsAppTypes> extends ActionModel<P, T> {
 }
@@ -26,14 +27,22 @@ export enum ConfigsAppState {
     saving,
 }
 
+
+export interface registerCodeModel {
+    posPIN: number,
+    coord1: string,
+    coord2: string
+}
+
 export interface ConfigsAppModel {
     state: ConfigsAppState;
-    registrado: boolean;
+    claveRegistro?: registerCodeModel;
+    registradoCompletado: boolean;
     biometrics: boolean;
 }
 
 export const ConfigsAppInitialState: ConfigsAppModel = {
     state: ConfigsAppState.none,
-    registrado: false,
+    registradoCompletado: false,
     biometrics: false,
 }

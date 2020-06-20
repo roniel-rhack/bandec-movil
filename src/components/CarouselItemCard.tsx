@@ -29,25 +29,25 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 75,
         left: 30,
-        fontSize: 26,
+        fontSize: 25,
     },
     cardName: {
         position: "absolute",
         bottom: 42,
         left: 30,
-        fontSize: 11
+        fontSize: 13.5
     },
     cardMoneda: {
         position: "absolute",
         bottom: 22,
         left: 25,
-        fontSize: 11
+        fontSize: 13.5
     },
     cardExp: {
         position: "absolute",
         bottom: 22,
-        left: 100,
-        fontSize: 11
+        left: 95,
+        fontSize: 13.5
     }
 })
 
