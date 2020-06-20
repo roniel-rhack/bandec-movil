@@ -7,6 +7,7 @@ interface CheckBoxWithLabelProps extends NativeBase.ListItem {
     label: string;
     name: string;
     explain?: string;
+    textHelp?: string;
 }
 
 const CheckBoxWithLabel: React.FC<CheckBoxWithLabelProps> = (props: CheckBoxWithLabelProps) => {
@@ -20,12 +21,13 @@ const CheckBoxWithLabel: React.FC<CheckBoxWithLabelProps> = (props: CheckBoxWith
                 <Text>{props.label}</Text>
             </Body>
             <Right>
-                <Icon color="#FF0000" name="alert" onPress={() => Toast.show({
-                    text: `Si habilita esta opción la proxima vez que ingrese a la aplicación la autenticación se` +
-                        ` realizara de forma automática.`,
-                    duration: 15000,
-                    buttonText: "Leido"
-                })}/>
+                {props.textHelp ? (
+                    <Icon color="#FF0000" name="alert" onPress={() => Toast.show({
+                        text: `${props.textHelp}`,
+                        duration: 15000,
+                        buttonText: "Leido"
+                    })}/>
+                ) : null}
             </Right>
         </ListItem>
     );

@@ -34,13 +34,11 @@ const AppNavigator: React.FC<AppNavigatorProps> = (props: AppNavigatorProps) => 
                 <NavigationContainer theme={DefaultTheme}>
                     <Tab.Navigator initialRouteName={props.ConfigsApp.registradoCompletado
                         ? "Autenticarse" : "Registrarse"}>
-                        {!props.ConfigsApp.registradoCompletado ? (
                             <Tab.Screen name="Autenticarse" component={AuthScreen}
                                         options={{
                                             tabBarIcon: props1 => iconTab(props1, "person"),
                                             unmountOnBlur: true
                                         }}/>
-                        ) : null}
                         {!props.ConfigsApp.claveRegistro ? (
                             <Tab.Screen name="Registrarse" component={RegisterScreen}
                                         options={{

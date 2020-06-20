@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {Formik} from "formik";
 import {Button, CardItem, Container, Spinner, Text} from "native-base";
 import InputWithLabel from "../components/InputWithLabel";
@@ -14,10 +14,12 @@ import {ConfigsAppModel, ConfigsAppState} from "../reducers/ConfigsApp";
 
 interface authValues {
     clave: string;
+    show: boolean;
 }
 
 export const initialValue: authValues = {
     clave: "",
+    show: false
 }
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -51,20 +53,28 @@ export interface AuthScreenProps {
 
 // TODO TRABAJANDO AUN AKI <<<
 const AuthScreen: React.FC<AuthScreenProps> = (props) => {
+    const [waitBiometric, setWaitBiometric] = useState(true);
 
-    if (props.configsApp.biometrics && props.configsApp.registradoCompletado && props.configsApp.state === ConfigsAppState.completed)
-        ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
-            .then((resultObject) => {
-                const {success} = resultObject
-                if (success) {
-                    console.log('successful biometrics provided')
-                } else {
-                    console.log('user cancelled biometric prompt')
-                }
-            })
-            .catch(() => {
-                console.log('biometrics failed')
-            })
+    useEffect(() => {
+        if (props.configsApp.biometrics && props.configsApp.registradoCompletado && props.configsApp.state === ConfigsAppState.completed)
+            ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
+                .then((resultObject) => {
+                    const {success} = resultObject
+                    if (success) {
+                        console.log('successful biometrics provided')
+                        setWaitBiometric(false);
+                    } else {
+                        console.log('user cancelled biometric prompt')
+                        setWaitBiometric(false);
+                    }
+                })
+                .catch(() => {
+                    console.log('biometrics failed')
+                    setWaitBiometric(false);
+                })
+        else
+            setWaitBiometric(false);
+    }, [])
 
     return (
         <Container>
@@ -79,28 +89,35 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
                     }}
             >
                 {(formikBag) => (
-                    <FooterForm>
-                        <CardItem header>
-                            <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
-                        </CardItem>
-                        {props.configsApp.claveRegistro ? (
-                            <Text>Código de autenticación:
-                                {`${props.configsApp.claveRegistro.posPIN} ${props.configsApp.claveRegistro.coord1} ${props.configsApp.claveRegistro.coord2}`}</Text>
-                        ) : null}
-                        <InputWithLabel secureTextEntry style={styles.clave} formikBag={formikBag}
-                                        label="Clave de autenticación:" name="clave" keyboardType="numeric"/>
+                    <Fragment>
+                        {!waitBiometric ? (
+                            <FooterForm>
+                                <CardItem header>
+                                    <Text>Introduzca la clave de autenticación para acceder al sistema.</Text>
+                                </CardItem>
+                                {props.configsApp.claveRegistro ? (
+                                    <Text>Código de autenticación:
+                                        {`${props.configsApp.claveRegistro.posPIN} ${props.configsApp.claveRegistro.coord1} ${props.configsApp.claveRegistro.coord2}`}</Text>
+                                ) : null}
+                                <InputWithLabel secureTextEntry={!formikBag.values.show} style={styles.clave}
+                                                formikBag={formikBag}
+                                                label="Clave de autenticación:" name="clave" keyboardType="numeric"/>
+                                <CheckBoxWithLabel style={styles.chkBoxRem} formikBag={formikBag} label="Mostrar clave"
+                                                   name="show" textHelp=""/>
 
-                        <CardItem footer style={styles.btnTxt}>
-                            {!formikBag.isSubmitting
-                                ?
-                                <Button bordered danger onPress={() => formikBag.submitForm()}
-                                        disabled={formikBag.isSubmitting}>
-                                    <Text>AUTENTICARSE</Text>
-                                </Button>
-                                : <Button transparent><Spinner/></Button>
-                            }
-                        </CardItem>
-                    </FooterForm>
+                                <CardItem footer style={styles.btnTxt}>
+                                    {!formikBag.isSubmitting
+                                        ?
+                                        <Button bordered danger onPress={() => formikBag.submitForm()}
+                                                disabled={formikBag.isSubmitting}>
+                                            <Text>AUTENTICARSE</Text>
+                                        </Button>
+                                        : <Button transparent><Spinner/></Button>
+                                    }
+                                </CardItem>
+                            </FooterForm>
+                        ) : null}
+                    </Fragment>
                 )}
             </Formik>
         </Container>
@@ -116,6 +133,7 @@ const AuthScreenSchemaValidation = yup.object<authValues>({
                 return value == parseInt(value);
             }
         ),
+    show: yup.boolean().notRequired()
 })
 
 const mapStateToProps = (state: rootStateModel) => ({
