@@ -3,14 +3,17 @@ import ConfigsAppTypes from "./TypesApp";
 import AsyncStorage from "@react-native-community/async-storage";
 
 const ConfigsApp = (state: ConfigsAppModel = ConfigsAppInitialState, {type, payload}: ConfigsAppActionModel): ConfigsAppModel => {
+    let newState;
     switch (type) {
         case ConfigsAppTypes.RegisterCodeChange:
-            return {
+            newState = {
                 ...state,
                 claveRegistro: payload as registerCodeModel
-            }
+            };
+            AsyncStorage.setItem('ConfigsApp', JSON.stringify(newState)).then().catch();
+            return newState;
         case ConfigsAppTypes.LoadingSuccess:
-            const newState = {
+            newState = {
                 ...state,
                 ...payload,
                 state: ConfigsAppState.completed,

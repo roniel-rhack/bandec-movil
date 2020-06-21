@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     btnAdd: {
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        marginRight: 10
     }
 })
 
@@ -32,8 +33,8 @@ const HomeScreen: React.FC<HomeScreenProps> = (props) => {
         <View style={styles.view}>
             <View style={{flexDirection: "row"}}>
                 <Text style={styles.titleCards}>Tarjetas</Text>
-                <Button transparent iconRight style={styles.btnAdd} small>
-                    <Text>Agregar Nueva</Text>
+                <Button danger rounded iconRight style={styles.btnAdd} small>
+                    <Text>Agregar</Text>
                     <Icon name="add"/>
                 </Button>
             </View>
