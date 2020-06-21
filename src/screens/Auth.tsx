@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {Formik} from "formik";
-import {Button, CardItem, Container, Spinner, Text} from "native-base";
+import {Button, CardItem, Container, Spinner, Text, Toast} from "native-base";
 import InputWithLabel from "../components/InputWithLabel";
 import CheckBoxWithLabel from "../components/CheckBoxWithLabel";
 import * as yup from "yup";
@@ -11,6 +11,10 @@ import ReactNativeBiometrics from 'react-native-biometrics'
 import {connect} from "react-redux";
 import {rootStateModel} from "../reducers";
 import {ConfigsAppModel, ConfigsAppState} from "../reducers/ConfigsApp";
+import UssdDialer from "../native/UssdDialer";
+// @ts-ignore;
+import SmsListener from 'react-native-android-sms-listener';
+import {saveCodeAuth} from "../actions/ConfigsApp";
 
 interface authValues {
     clave: string;
@@ -49,14 +53,17 @@ const styles = StyleSheet.create({
 
 export interface AuthScreenProps {
     configsApp: ConfigsAppModel;
+    saveCodeAuth: (code: string) => void;
 }
 
 // TODO TRABAJANDO AUN AKI <<<
 const AuthScreen: React.FC<AuthScreenProps> = (props) => {
     const [waitBiometric, setWaitBiometric] = useState(true);
+    const [codeTest, setCodeTest] = useState('');
+    const [auth, setAuth] = useState(false);
+    const [ctaAuth, ctaAuth] = useState("");
 
     useEffect(() => {
-
         if (props.configsApp.biometrics && props.configsApp.registradoCompletado && props.configsApp.state === ConfigsAppState.completed)
             ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
                 .then((resultObject) => {
@@ -75,7 +82,18 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
                 })
         else
             setWaitBiometric(false);
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        let smsListener = SmsListener.addListener((message: { originatingAddress: string, body: string }) => {
+            if (message.originatingAddress === "PAGOxMOVIL") {
+                console.log('msg', message.body) // TODO Falta comenzar a manejar los mensajes de respuestas de la auth
+            }
+        })
+        return () => {
+            smsListener.remove();
+        }
+    }, []);
 
     return (
         <Container>
@@ -84,9 +102,29 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
                     initialValues={initialValue}
                     onSubmit={(values, {setSubmitting}) => {
                         setSubmitting(true);
-                        setTimeout(() => {
-                            setSubmitting(false);
-                        }, 3500);
+                        setCodeTest(values.clave);
+                        UssdDialer.autenticateUSSDCode(values.clave)
+                            .then(value => {
+                                if (!value.toUpperCase().includes("USTED YA SE ENCUENTRA AUTENTICADO".toUpperCase())) {
+
+                                }
+                                Toast.show({
+                                    // @ts-ignore
+                                    text: value,
+                                    duration: 5000,
+                                    buttonText: "Leido"
+                                })
+                                setSubmitting(false);
+                            })
+                            .catch(reason => {
+                                Toast.show({
+                                    // @ts-ignore
+                                    text: reason,
+                                    duration: 5000,
+                                    buttonText: "Leido"
+                                })
+                                setSubmitting(false);
+                            })
                     }}
             >
                 {(formikBag) => (
@@ -147,6 +185,8 @@ const mapStateToProps = (state: rootStateModel) => ({
 })
 
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+    saveCodeAuth
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthScreen);

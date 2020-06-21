@@ -69,6 +69,7 @@ export interface ConfigsAppModel {
     biometrics: boolean;
     cardInUse?: string;
     authCode?: string;
+    lastConnect?: number;
 }
 
 export const ConfigsAppInitialState: ConfigsAppModel = {

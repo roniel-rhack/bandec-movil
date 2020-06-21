@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ConfigsAppTypes from "../reducers/TypesApp";
 import ReactNativeBiometrics from 'react-native-biometrics'
 import {cardNumberClear} from "../utils/cardProcess";
+import {encrypt} from "../utils/Crypter";
 
 export const LoadConfigsApp = () => {
     return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
@@ -58,7 +59,7 @@ export const saveCodeAuth = (code: string) => {
     return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
         dispatch({
             type: ConfigsAppTypes.SaveCodeAuth,
-            payload: {authCode: code} as ConfigsAppModel
+            payload: {authCode: encrypt(code), lastConnect: new Date().getTime()} as ConfigsAppModel
         })
     }
 }
