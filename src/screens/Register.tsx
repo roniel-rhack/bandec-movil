@@ -20,7 +20,12 @@ import {ConfigsAppModel, registerCodeModel} from "../reducers/ConfigsApp";
 import {StackNavigationProp} from "@react-navigation/stack";
 import {rootStateModel} from "../reducers";
 
-const initialValue: CardModel = {pan: "9224 0699 9003 5624", name: "MARCOS MACIAS SANCHEZ", expYear: "29", expMonth: "08"}
+const initialValue: CardModel = {
+    pan: "9224 0699 9003 5624",
+    name: "MARCOS MACIAS SANCHEZ",
+    expYear: "29",
+    expMonth: "08"
+}
 const styles = StyleSheet.create({
     btnTxt: {
         alignSelf: "center"
@@ -43,6 +48,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
     useEffect(() => {
         let smsListener = SmsListener.addListener((message: { originatingAddress: string, body: string }) => {
             if (message.originatingAddress === "PAGOxMOVIL") {
+                console.log('msg', message.body)
                 const code = extractRegisterCode(message.body)
                 if (code) props.captureRegisterCode(code);
             }

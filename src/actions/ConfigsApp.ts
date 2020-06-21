@@ -3,6 +3,7 @@ import {ConfigsAppActionModel, ConfigsAppModel, registerCodeModel} from "../redu
 import AsyncStorage from '@react-native-community/async-storage';
 import ConfigsAppTypes from "../reducers/TypesApp";
 import ReactNativeBiometrics from 'react-native-biometrics'
+import {cardNumberClear} from "../utils/cardProcess";
 
 export const LoadConfigsApp = () => {
     return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
@@ -41,5 +42,23 @@ export const LoadConfigsApp = () => {
 export const captureRegisterCode = (code: registerCodeModel) => {
     return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
         dispatch({type: ConfigsAppTypes.RegisterCodeChange, payload: code})
+    }
+}
+
+export const changeCardInUse = (pan: string) => {
+    return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
+        dispatch({
+            type: ConfigsAppTypes.ChangeCardOInUse,
+            payload: {cardInUse: cardNumberClear((pan))} as ConfigsAppModel
+        })
+    }
+}
+
+export const saveCodeAuth = (code: string) => {
+    return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
+        dispatch({
+            type: ConfigsAppTypes.SaveCodeAuth,
+            payload: {authCode: code} as ConfigsAppModel
+        })
     }
 }

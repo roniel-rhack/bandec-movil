@@ -10,7 +10,7 @@ export const extractRegisterCode = (msg: string): registerCodeModel | null => {
     if (!valid) return null;
     const msgNormaliced = normalizeString(msg);
     const code = msgNormaliced.split("CLAVE DE AUTENTICACION: ")[1].split(" EJEMPLO: ")[0]
-        .replace('.', '').replace(',', '')
+        .replace(/\./g, '').replace(/\,/g, '')
         .replace(/\s{1,}/g, '');
     return {
         posPIN: parseInt(code[0]),

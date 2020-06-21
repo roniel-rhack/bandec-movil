@@ -3,6 +3,8 @@ enum ConfigsAppTypes {
     LoadingSuccess,
     LoadingFailure,
     RegisterCodeChange,
+    ChangeCardOInUse,
+    SaveCodeAuth,
 }
 
 export default ConfigsAppTypes;

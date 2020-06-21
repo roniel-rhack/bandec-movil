@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 });
 
 export interface AuthScreenProps {
-    configsApp: ConfigsAppModel
+    configsApp: ConfigsAppModel;
 }
 
 // TODO TRABAJANDO AUN AKI <<<
@@ -56,6 +56,7 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
     const [waitBiometric, setWaitBiometric] = useState(true);
 
     useEffect(() => {
+
         if (props.configsApp.biometrics && props.configsApp.registradoCompletado && props.configsApp.state === ConfigsAppState.completed)
             ReactNativeBiometrics.simplePrompt({promptMessage: 'Confirme su identidad', cancelButtonText: 'Cancelar'})
                 .then((resultObject) => {
@@ -145,4 +146,7 @@ const mapStateToProps = (state: rootStateModel) => ({
     configsApp: state.ConfigsApp
 })
 
-export default connect(mapStateToProps)(AuthScreen);
+
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthScreen);
