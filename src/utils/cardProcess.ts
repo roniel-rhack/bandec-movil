@@ -7,7 +7,7 @@ export const panCardVisualizerEncode = (pan: string) => {
             finalPan += " ";
         }
         if (i > 5 && i < 12)
-            finalPan += "*"
+            finalPan += "X"
         else
             finalPan += pan[i];
     }

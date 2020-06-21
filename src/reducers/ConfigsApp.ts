@@ -36,6 +36,14 @@ const ConfigsApp = (state: ConfigsAppModel = ConfigsAppInitialState, {type, payl
             };
             AsyncStorage.setItem('ConfigsApp', JSON.stringify(newState)).then().catch();
             return newState;
+        case ConfigsAppTypes.registerCompleted:
+            newState = {
+                ...state,
+                ...payload,
+                state: ConfigsAppState.completed,
+            };
+            AsyncStorage.setItem('ConfigsApp', JSON.stringify(newState)).then().catch();
+            return newState;
         default:
             return state;
     }

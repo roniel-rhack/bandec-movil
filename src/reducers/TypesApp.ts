@@ -5,6 +5,7 @@ enum ConfigsAppTypes {
     RegisterCodeChange,
     ChangeCardOInUse,
     SaveCodeAuth,
+    registerCompleted,
 }
 
 export default ConfigsAppTypes;

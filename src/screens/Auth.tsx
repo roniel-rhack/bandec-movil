@@ -14,8 +14,10 @@ import {ConfigsAppModel, ConfigsAppState} from "../reducers/ConfigsApp";
 import UssdDialer from "../native/UssdDialer";
 // @ts-ignore;
 import SmsListener from 'react-native-android-sms-listener2'
-import {saveCodeAuth} from "../actions/ConfigsApp";
+import {changeCardInUse, registerCompleted, saveCodeAuth} from "../actions/ConfigsApp";
 import {SmsListenerModel} from "../utils/TypesUtils";
+import {extractCuenta, validateAuth} from "../utils/MessagesProcess";
+import {StackNavigationProp} from "@react-navigation/stack";
 
 interface authValues {
     clave: string;
@@ -55,14 +57,15 @@ const styles = StyleSheet.create({
 export interface AuthScreenProps {
     configsApp: ConfigsAppModel;
     saveCodeAuth: (code: string) => void;
+    changeCardInUse: (pan: string) => void;
+    registerCompleted: () => void;
+    navigation: StackNavigationProp<any>;
 }
 
 // TODO TRABAJANDO AUN AKI <<<
 const AuthScreen: React.FC<AuthScreenProps> = (props) => {
     const [waitBiometric, setWaitBiometric] = useState(true);
     const [codeTest, setCodeTest] = useState('');
-    const [auth, setAuth] = useState(false);
-    const [ctaAuth, setCtaAuth] = useState("");
 
     useEffect(() => {
         if (props.configsApp.biometrics && props.configsApp.registradoCompletado && props.configsApp.state === ConfigsAppState.completed)
@@ -83,18 +86,23 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
                 })
         else
             setWaitBiometric(false);
-    }, []);
 
-    useEffect(() => {
         let smsListener = SmsListener.addListener((message: SmsListenerModel) => {
-            if (message.originatingAddress === "PAGOxMOVIL") {
-            console.log('msg', message.body)
+            if (message.originatingAddress === "PAGOxMOVIL" && validateAuth(message.body)) {
+                props.saveCodeAuth(codeTest);
+                props.changeCardInUse(extractCuenta(message.body));
+                props.registerCompleted();
             }
         })
         return () => {
             smsListener.remove();
         }
     }, []);
+
+    useEffect(() => {
+        if (props.configsApp.registradoCompletado)
+            props.navigation.navigate("Inicio");
+    }, [props.configsApp.registradoCompletado]);
 
     return (
         <Container>
@@ -187,7 +195,9 @@ const mapStateToProps = (state: rootStateModel) => ({
 
 
 const mapDispatchToProps = {
-    saveCodeAuth
+    saveCodeAuth,
+    changeCardInUse,
+    registerCompleted,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthScreen);

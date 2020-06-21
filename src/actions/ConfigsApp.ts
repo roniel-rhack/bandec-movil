@@ -63,3 +63,12 @@ export const saveCodeAuth = (code: string) => {
         })
     }
 }
+
+export const registerCompleted = (code: string) => {
+    return (dispatch: Dispatch<ConfigsAppActionModel>, getState: Function) => {
+        dispatch({
+            type: ConfigsAppTypes.registerCompleted,
+            payload: {registradoCompletado: true} as ConfigsAppModel
+        })
+    }
+}
