@@ -12,13 +12,14 @@ import CardCarouselComponent from "../components/CarouselCards";
 import UssdDialer from "../native/UssdDialer";
 import {cardNumberClear} from "../utils/cardProcess";
 // @ts-ignore;
-import SmsListener from 'react-native-android-sms-listener';
+import SmsListener from 'react-native-android-sms-listener2'
 import {extractRegisterCode} from "../utils/MessagesProcess";
 import {connect} from "react-redux";
 import {captureRegisterCode} from "../actions/ConfigsApp";
 import {ConfigsAppModel, registerCodeModel} from "../reducers/ConfigsApp";
 import {StackNavigationProp} from "@react-navigation/stack";
 import {rootStateModel} from "../reducers";
+import {SmsListenerModel} from "../utils/TypesUtils";
 
 const initialValue: CardModel = {
     pan: "9224 0699 9003 5624",
@@ -46,7 +47,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
     const [inputFocus, setInputFocus] = useState("");
 
     useEffect(() => {
-        let smsListener = SmsListener.addListener((message: { originatingAddress: string, body: string }) => {
+        let smsListener = SmsListener.addListener((message: SmsListenerModel) => {
             if (message.originatingAddress === "PAGOxMOVIL") {
                 console.log('msg', message.body)
                 const code = extractRegisterCode(message.body)

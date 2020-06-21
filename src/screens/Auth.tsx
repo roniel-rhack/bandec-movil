@@ -13,8 +13,9 @@ import {rootStateModel} from "../reducers";
 import {ConfigsAppModel, ConfigsAppState} from "../reducers/ConfigsApp";
 import UssdDialer from "../native/UssdDialer";
 // @ts-ignore;
-import SmsListener from 'react-native-android-sms-listener';
+import SmsListener from 'react-native-android-sms-listener2'
 import {saveCodeAuth} from "../actions/ConfigsApp";
+import {SmsListenerModel} from "../utils/TypesUtils";
 
 interface authValues {
     clave: string;
@@ -61,7 +62,7 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
     const [waitBiometric, setWaitBiometric] = useState(true);
     const [codeTest, setCodeTest] = useState('');
     const [auth, setAuth] = useState(false);
-    const [ctaAuth, ctaAuth] = useState("");
+    const [ctaAuth, setCtaAuth] = useState("");
 
     useEffect(() => {
         if (props.configsApp.biometrics && props.configsApp.registradoCompletado && props.configsApp.state === ConfigsAppState.completed)
@@ -85,9 +86,9 @@ const AuthScreen: React.FC<AuthScreenProps> = (props) => {
     }, []);
 
     useEffect(() => {
-        let smsListener = SmsListener.addListener((message: { originatingAddress: string, body: string }) => {
+        let smsListener = SmsListener.addListener((message: SmsListenerModel) => {
             if (message.originatingAddress === "PAGOxMOVIL") {
-                console.log('msg', message.body) // TODO Falta comenzar a manejar los mensajes de respuestas de la auth
+            console.log('msg', message.body)
             }
         })
         return () => {
